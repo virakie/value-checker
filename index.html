@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Value Checker</title>
 <link rel="icon" type="image/png" href="favicon.png">
@@ -303,9 +302,12 @@ input[type=range]::-webkit-slider-thumb {
 
 .dist-col-idx {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-dim);
   flex-shrink: 0;
+  text-align: center;
+  line-height: 1.3;
+  word-break: break-word;
 }
 
 /* Sidebar buttons */
@@ -342,19 +344,20 @@ input[type=file] { display: none; }
   margin-bottom: 10px;
 }
 .fc-verdict .verdict-grade {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   margin-bottom: 6px;
+  color: var(--text-dim);
 }
-.fc-verdict .verdict-grade.good { color: #55a146; border-color: #55a146; }
-.fc-verdict .verdict-grade.warn { color: #fdfd2e; }
-.fc-verdict .verdict-grade.bad  { color: #ef5a8d; }
-.fc-verdict.good { border-color: #55a146; }
-.fc-verdict.warn { border-color: #fdfd2e; }
-.fc-verdict.bad  { border-color: #ef5a8d; }
-.fc-verdict .verdict-line { color: var(--text-dim); margin-bottom: 3px; }
+.fc-verdict .verdict-grade.good,
+.fc-verdict .verdict-grade.warn,
+.fc-verdict .verdict-grade.bad  { color: var(--text-dim); }
+.fc-verdict.good,
+.fc-verdict.warn,
+.fc-verdict.bad  { border-color: #383838; }
+.fc-verdict .verdict-line { color: var(--text); margin-bottom: 4px; line-height: 1.6; }
 
 /* Toast */
 .toast {
@@ -429,9 +432,9 @@ input[type=file] { display: none; }
       <div class="slider-wrap">
         <div class="control-row">
           <span class="control-label">Simplicity</span>
-          <span class="control-value" id="simplVal">0</span>
+          <span class="control-value" id="simplVal">1</span>
         </div>
-        <input type="range" id="simplicity" min="0" max="100" value="0">
+        <input type="range" id="simplicity" min="0" max="7" value="1">
       </div>
       <div class="slider-wrap">
         <div class="control-row">
@@ -505,7 +508,7 @@ const toastEl        = document.getElementById('toast');
 // \u2500\u2500\u2500 State \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 let currentImage = null;
 let numValues    = 3;
-let simplicity   = 0;
+let simplicity   = 1;
 let lowkey       = 50;
 let cachedGray   = null; // blurred gray array for histogram
 
@@ -549,7 +552,7 @@ function undo() {
 // \u2500\u2500\u2500 Reset \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function doReset() {
   if (currentImage) pushUndo();
-  currentImage = null; numValues = 3; simplicity = 0; lowkey = 50;
+  currentImage = null; numValues = 3; simplicity = 1; lowkey = 50;
   stops = computeDefaultStops(3);
   syncUI(); clearAll(); urlInput.value = '';
   showToast('Reset');
@@ -581,6 +584,8 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
 });
 undoBtn.addEventListener('click', undo);
+
+// ─── Layout toggle (side-by-side ↔ top/bottom) ───────────────────────────
 
 // \u2500\u2500\u2500 Compare button (hold to show original over value map) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 compareBtn.addEventListener('mousedown', () => {
@@ -665,17 +670,62 @@ function triggerURLLoad() {
 urlLoadBtn.addEventListener('click', triggerURLLoad);
 urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') triggerURLLoad(); });
 
+let imageTainted = false;
+
 function loadFromURL(url) {
   setLoading(true);
-  const img = new Image(); img.crossOrigin = 'anonymous';
-  img.onload = () => { setLoading(false); applyImage(img); showToast('Loaded from URL'); };
+  imageTainted = false;
+
+  // Try with crossOrigin first — needed for pixel access (getImageData)
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    setLoading(false);
+    applyImage(img);
+    showToast('Loaded from URL');
+  };
   img.onerror = () => {
+    // Server rejected the CORS preflight — retry without crossOrigin.
+    // Image will display but pixel reads will be blocked by the browser.
     const img2 = new Image();
-    img2.onload = () => { setLoading(false); applyImage(img2); showToast('Loaded from URL'); };
-    img2.onerror = () => { setLoading(false); showToast('Could not load URL \u2014 try downloading first'); };
+    img2.onload = () => {
+      setLoading(false);
+      imageTainted = true;
+      applyImageTainted(img2);
+    };
+    img2.onerror = () => { setLoading(false); showToast('Could not load URL — try downloading first'); };
     img2.src = url;
   };
   img.src = url;
+}
+
+function applyImageTainted(img) {
+  // Image loads and displays but pixel data is blocked — show original only
+  currentImage = img;
+  dropOverlay.classList.add('hidden');
+  origCanvas.width = img.width; origCanvas.height = img.height;
+  origCtx.drawImage(img, 0, 0);
+  // Clear any previous value map
+  valueCanvas.width = img.width; valueCanvas.height = img.height;
+  valueCtx.clearRect(0, 0, img.width, img.height);
+  // Show taint warning on value map side
+  valueCtx.fillStyle = '#0a0a0a';
+  valueCtx.fillRect(0, 0, img.width, img.height);
+  valueCtx.fillStyle = '#555';
+  valueCtx.font = '14px JetBrains Mono, monospace';
+  valueCtx.textAlign = 'center';
+  valueCtx.fillText('CORS blocked — pixel access denied', img.width/2, img.height/2 - 12);
+  valueCtx.font = '11px JetBrains Mono, monospace';
+  valueCtx.fillStyle = '#3a3a3a';
+  valueCtx.fillText('Save the image and load it as a file instead', img.width/2, img.height/2 + 14);
+  saveBtn.disabled = true;
+  resetBtn.disabled = false;
+  compareBtn.disabled = true;
+  falseColorBtn.disabled = true;
+  cachedGray = null;
+  distChart.innerHTML = '';
+  drawHistogramEmpty();
+  showToast('Loaded for display only — pixel access blocked');
 }
 
 function loadFromFile(file) {
@@ -719,7 +769,13 @@ function processImage() {
   const w = img.width, h = img.height;
   const off = document.createElement('canvas'); off.width=w; off.height=h;
   const offCtx = off.getContext('2d'); offCtx.drawImage(img,0,0);
-  const imgData = offCtx.getImageData(0,0,w,h);
+  let imgData;
+  try { imgData = offCtx.getImageData(0,0,w,h); }
+  catch(e) {
+    imageTainted = true;
+    applyImageTainted(currentImage);
+    return;
+  }
 
   // Desaturate
   const gray = new Uint8ClampedArray(w*h);
@@ -730,7 +786,7 @@ function processImage() {
   for (let i=0;i<gray.length;i++){gd.data[i*4]=gray[i];gd.data[i*4+1]=gray[i];gd.data[i*4+2]=gray[i];gd.data[i*4+3]=255;}
 
   // Blur
-  const br = Math.round((simplicity/100)*80);
+  const br = Math.round((simplicity / 7) * 7);
   const blurred = br>0 ? gaussianBlur(gd,br) : gd;
   const bg = new Uint8ClampedArray(w*h);
   for (let i=0;i<bg.length;i++) bg[i]=blurred.data[i*4];
@@ -848,11 +904,11 @@ function redrawHistCanvas() {
     histCtx.lineTo(x, ch-2);
     histCtx.closePath();
     histCtx.fill();
-    // Value label
-    histCtx.fillStyle = '#888';
-    histCtx.font = '9px JetBrains Mono, monospace';
+    // Value label — drawn above the triangle, not inside it
+    histCtx.fillStyle = '#777';
+    histCtx.font = '8px JetBrains Mono, monospace';
     histCtx.textAlign = 'center';
-    histCtx.fillText(stops[idx], x, ch-1);
+    histCtx.fillText(stops[idx], x, ch-16);
   });
 }
 
@@ -903,6 +959,16 @@ window.addEventListener('mouseup', () => { draggingStop = null; });
 function drawDistribution(counts, total, zoneMids) {
   distChart.innerHTML = '';
   const maxCount = Math.max(...counts);
+  const n = counts.length;
+
+  // Tonal zone names by position (darkest → brightest)
+  const zoneNames = {
+    2: ['Shadows', 'Highlights'],
+    3: ['Shadows', 'Midtones', 'Highlights'],
+    4: ['Shadows', 'Midtones', 'Midtones', 'Highlights'],
+    5: ['Shadows', 'Darks', 'Midtones', 'Lights', 'Highlights'],
+  };
+  const names = zoneNames[n] || counts.map((_,i) => i === 0 ? 'Shadows' : i === n-1 ? 'Highlights' : 'Midtones');
 
   counts.forEach((c, i) => {
     const pct    = ((c / total) * 100).toFixed(1);
@@ -917,7 +983,7 @@ function drawDistribution(counts, total, zoneMids) {
         <div class="dist-col-bar" style="height:${barPct}%;background:rgb(${color},${color},${color});border:1px solid rgba(255,255,255,0.08);"></div>
       </div>
       <div class="dist-col-swatch" style="background:rgb(${color},${color},${color});"></div>
-      <div class="dist-col-idx">${i+1}</div>`;
+      <div class="dist-col-idx">${names[i]}</div>`;
     distChart.appendChild(col);
   });
 }
@@ -999,7 +1065,9 @@ function renderFalseColor() {
   const off = document.createElement('canvas');
   off.width = w; off.height = h;
   off.getContext('2d').drawImage(currentImage, 0, 0);
-  const src = off.getContext('2d').getImageData(0, 0, w, h).data;
+  let src;
+  try { src = off.getContext('2d').getImageData(0, 0, w, h).data; }
+  catch(e) { showToast('Pixel access blocked — save image and load as file'); return; }
   const out = new Uint8ClampedArray(w * h * 4);
   for (let i = 0; i < src.length; i += 4) {
     const lum = Math.round(0.299*src[i] + 0.587*src[i+1] + 0.114*src[i+2]);
@@ -1033,7 +1101,9 @@ function showFCLegend() {
   const off = document.createElement('canvas');
   off.width = currentImage.width; off.height = currentImage.height;
   off.getContext('2d').drawImage(currentImage, 0, 0);
-  const data = off.getContext('2d').getImageData(0, 0, off.width, off.height).data;
+  let data;
+  try { data = off.getContext('2d').getImageData(0, 0, off.width, off.height).data; }
+  catch(e) { legend.style.display = 'none'; return; }
   const total = off.width * off.height;
 
   // Bucket each pixel by luminance into named zones
@@ -1062,51 +1132,77 @@ function showFCLegend() {
   // Compute percentages
   keys.forEach(k => { zones[k].pct = (zones[k].count / total) * 100; });
 
-  // ── Verdict logic ──────────────────────────────────────────────────────────
-  const clipped    = zones.clipped.pct;
-  const over       = zones.overexposed.pct + zones.hot.pct + clipped;
-  const bright     = zones.bright.pct + zones.exposed.pct;
-  const mid        = zones.skin.pct + zones.midgrey.pct + zones.lowmid.pct;
-  const shadow     = zones.correct.pct;
-  const under      = zones.under.pct + zones.crushed.pct;
-  const crushed    = zones.crushed.pct;
+  // ── Smarter verdict: readability-first, not exposure-center ───────────────
+  const clipped  = zones.clipped.pct;
+  const ovexp    = zones.overexposed.pct + zones.hot.pct;
+  const bright   = zones.bright.pct + zones.exposed.pct;
+  const mid      = zones.skin.pct + zones.midgrey.pct + zones.lowmid.pct;
+  const shadow   = zones.correct.pct;
+  const dark     = zones.under.pct + zones.crushed.pct;
+  const crushed  = zones.crushed.pct;
+
+  // "Readable" = pixels that carry tonal information without clipping
+  // Weights: midtones count most, bright/shadow count partially, extremes count least
+  const readable = mid * 1.0 + bright * 0.7 + shadow * 0.6 + dark * 0.3 + ovexp * 0.2;
+
+  // Tonal spread: are values spread intentionally across the range?
+  const zonesUsed = keys.filter(k => zones[k].pct > 3).length;
+  const isHighContrast = (ovexp + bright > 20) && (dark + shadow > 20);
+  const isHighKey  = bright + mid > 65 && dark < 15;
+  const isLowKey   = dark + shadow > 50 && bright < 15;
+  const isMidHeavy = mid > 45;
+  const hasBalance = mid > 20 && (bright + shadow) > 20;
+
+  // Hard failures — only truly broken images
+  const hardClip   = clipped > 8;
+  const hardCrush  = crushed > 20;
+
+  // Soft issues — only flag if there's NO compensating readability
+  const softOver   = ovexp > 35 && mid < 15;
+  const softUnder  = dark > 55 && mid < 10;
 
   const lines = [];
   let grade = 'good';
 
-  // Overall exposure call
-  if (clipped > 5) {
-    grade = 'bad';
-    lines.push(`${clipped.toFixed(1)}% of pixels are clipped white — detail is lost in highlights.`);
-  } else if (over > 20) {
+  // Primary read — describe what the image is, not what's wrong with it
+  if (hardClip) {
     grade = 'warn';
-    lines.push(`Heavy highlight bias — ${over.toFixed(1)}% of the image is in overexposed territory.`);
-  } else if (under > 40) {
+    lines.push(`Highlights are fully blown in places — some detail in the brightest areas is gone.`);
+  } else if (hardCrush) {
     grade = 'warn';
-    lines.push(`Heavy shadow bias — ${under.toFixed(1)}% of the image is underexposed.`);
-  } else if (crushed > 15) {
-    grade = 'bad';
-    lines.push(`${crushed.toFixed(1)}% crushed blacks — shadow detail is gone.`);
-  } else if (mid > 40) {
+    lines.push(`Shadows are very deep — the darkest areas merge into solid black.`);
+  } else if (softOver) {
     grade = 'good';
-    lines.push(`Well-exposed midtones — ${mid.toFixed(1)}% of the image sits in the middle range.`);
+    lines.push(`Image leans bright overall. Highlights carry most of the visual weight.`);
+  } else if (softUnder) {
+    grade = 'good';
+    lines.push(`Image leans dark overall. Most of the detail lives in the shadow range.`);
+  } else if (isHighContrast) {
+    lines.push(`Strong contrast — the image uses a wide tonal range from deep shadows to bright highlights.`);
+  } else if (isHighKey) {
+    lines.push(`High-key tones — bright and open, with most of the image sitting in the upper range.`);
+  } else if (isLowKey) {
+    lines.push(`Low-key tones — dark and atmospheric, with the image anchored in the shadow range.`);
+  } else if (isMidHeavy) {
+    lines.push(`Midtone-heavy image — values are well centered with a solid tonal body.`);
+  } else if (hasBalance) {
+    lines.push(`Balanced tonal spread — shadows, midtones, and highlights are all present.`);
   } else {
-    lines.push(`Exposure looks balanced across the tonal range.`);
+    lines.push(`Even tonal distribution across the range.`);
   }
 
-  // Contrast read
-  const hasHighs = over + bright > 25;
-  const hasLows  = under + shadow > 25;
-  if (hasHighs && hasLows)  lines.push(`High contrast — both highlights and shadows are heavily used.`);
-  else if (!hasHighs && !hasLows) lines.push(`Low contrast — image is mostly midtones with limited range.`);
-  else if (hasHighs && mid < 20)  lines.push(`Looks high-key — bright with minimal midtone mass.`);
-  else if (hasLows && mid < 20)   lines.push(`Looks low-key — dark with minimal midtone mass.`);
+  // Secondary colour notes — purely descriptive
+  if (!hardClip && clipped > 1)
+    lines.push(`A touch of specular clipping in the highlights — common in bright light sources.`);
+  if (!hardCrush && crushed > 5 && crushed <= 20)
+    lines.push(`Some areas fall into deep black — adds depth and separation.`);
+  if (isHighContrast)
+    lines.push(`${zonesUsed} tonal zones are active across the image.`);
+  if (mid < 10 && !isHighKey && !isLowKey)
+    lines.push(`Low midtone presence — the image relies on contrast rather than gradual transitions.`);
 
-  // Clipping detail
-  if (clipped > 0.5 && clipped <= 5) lines.push(`Minor clipping (${clipped.toFixed(1)}%) — check specular highlights.`);
-
-  // Grade label
-  const gradeText = grade === 'good' ? '✓ Looks good' : grade === 'warn' ? '⚠ Needs attention' : '✗ Exposure issues';
+  // Grade label — neutral framing
+  const gradeText = hardClip || hardCrush ? '◎ Tonal note' : '◎ Tonal read';
 
   // ── Render verdict ─────────────────────────────────────────────────────────
   const verdictEl = document.getElementById('fcVerdict');
