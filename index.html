@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Value Checker</title>
 <style>
@@ -339,6 +340,7 @@ input[type=file] { display: none; }
     <button class="url-btn" id="urlLoadBtn">Load</button>
   </div>
   <div class="header-actions">
+    <button class="hbtn" id="falseColorBtn" disabled>◈ False Colors</button>
     <button class="hbtn compare" id="compareBtn" disabled title="Hold to compare with original">⊙ Compare</button>
     <button class="hbtn" id="undoBtn" disabled title="Ctrl+Z">↩ Undo</button>
     <button class="hbtn danger" id="resetBtn" disabled>Reset</button>
@@ -357,6 +359,9 @@ input[type=file] { display: none; }
         <div class="drop-text">Drop image anywhere<br>click to browse files<br>or paste a URL above</div>
       </div>
       <canvas id="origCanvas"></canvas>
+      <div class="compare-canvas" id="falseColorOverlay">
+        <canvas id="falseColorCanvas"></canvas>
+      </div>
     </div>
 
     <div class="canvas-wrap" id="valueWrap">
@@ -512,9 +517,125 @@ function clearAll() {
   valueCanvas.width = valueCanvas.height = 0;
   cachedGray = null;
   distChart.innerHTML = '';
-  drawHistogramEmpty();
+  
+// ─── False Colors LUT ────────────────────────────────────────────────────────
+const falseColorBtn     = document.getElementById('falseColorBtn');
+const falseColorOverlay = document.getElementById('falseColorOverlay');
+const falseColorCanvas  = document.getElementById('falseColorCanvas');
+const falseColorCtx     = falseColorCanvas.getContext('2d');
+
+let falseColorOn = false;
+let lutData      = null; // Float32Array r,g,b per entry, 64^3
+let lutSize      = 0;
+let lutLoading   = false;
+
+function parseCubeLUT(text) {
+  const lines = text.split(/\r?\n/);
+  let size = 0;
+  const entries = [];
+  for (const line of lines) {
+    const t = line.trim();
+    if (!t || t.startsWith('#') || t.startsWith('TITLE')) continue;
+    const sizeMatch = t.match(/^LUT_3D_SIZE\s+(\d+)/);
+    if (sizeMatch) { size = parseInt(sizeMatch[1]); continue; }
+    if (t.startsWith('LUT_') || t.startsWith('DOMAIN')) continue;
+    const parts = t.split(/\s+/);
+    if (parts.length === 3) {
+      const r = parseFloat(parts[0]), g = parseFloat(parts[1]), b = parseFloat(parts[2]);
+      if (!isNaN(r)) entries.push(r, g, b);
+    }
+  }
+  lutSize = size;
+  lutData = new Float32Array(entries);
+  console.log(`LUT loaded: ${size}^3, ${entries.length/3} entries`);
+}
+
+function loadLUT() {
+  if (lutData || lutLoading) return Promise.resolve();
+  lutLoading = true;
+  return fetch('FalseColor.cube')
+    .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.text(); })
+    .then(text => { parseCubeLUT(text); lutLoading = false; })
+    .catch(err => { lutLoading = false; showToast('Could not load FalseColor.cube'); console.error(err); });
+}
+
+function applyLUT(imageData) {
+  const src  = imageData.data;
+  const out  = new Uint8ClampedArray(src.length);
+  const size = lutSize;
+  const size2 = size * size;
+
+  for (let i = 0; i < src.length; i += 4) {
+    // Normalize 0-1
+    const r = src[i]   / 255;
+    const g = src[i+1] / 255;
+    const b = src[i+2] / 255;
+
+    // .cube format: R is fastest axis, then G, then B
+    const rf = r * (size - 1);
+    const gf = g * (size - 1);
+    const bf = b * (size - 1);
+
+    const r0 = Math.min(Math.floor(rf), size - 2);
+    const g0 = Math.min(Math.floor(gf), size - 2);
+    const b0 = Math.min(Math.floor(bf), size - 2);
+    const rt = rf - r0, gt = gf - g0, bt = bf - b0;
+
+    // Index: R + G*size + B*size*size (R fastest)
+    function idx(rr, gg, bb) { return (rr + gg * size + bb * size2) * 3; }
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    for (let ch = 0; ch < 3; ch++) {
+      const c000 = lutData[idx(r0,   g0,   b0)   + ch];
+      const c100 = lutData[idx(r0+1, g0,   b0)   + ch];
+      const c010 = lutData[idx(r0,   g0+1, b0)   + ch];
+      const c110 = lutData[idx(r0+1, g0+1, b0)   + ch];
+      const c001 = lutData[idx(r0,   g0,   b0+1) + ch];
+      const c101 = lutData[idx(r0+1, g0,   b0+1) + ch];
+      const c011 = lutData[idx(r0,   g0+1, b0+1) + ch];
+      const c111 = lutData[idx(r0+1, g0+1, b0+1) + ch];
+
+      const v =
+        lerp(lerp(lerp(c000, c100, rt), lerp(c010, c110, rt), gt),
+             lerp(lerp(c001, c101, rt), lerp(c011, c111, rt), gt), bt);
+      out[i + ch] = Math.round(v * 255);
+    }
+    out[i + 3] = 255;
+  }
+  return new ImageData(out, imageData.width, imageData.height);
+}
+
+function renderFalseColor() {
+  if (!currentImage) return;
+  const w = currentImage.width, h = currentImage.height;
+  const off = document.createElement('canvas');
+  off.width = w; off.height = h;
+  const offCtx = off.getContext('2d');
+  offCtx.drawImage(currentImage, 0, 0);
+  const imgData = offCtx.getImageData(0, 0, w, h);
+  falseColorCanvas.width  = w;
+  falseColorCanvas.height = h;
+  falseColorCtx.putImageData(applyLUT(imgData), 0, 0);
+  falseColorOverlay.classList.add('show');
+}
+
+falseColorBtn.addEventListener('click', () => {
+  if (!currentImage) return;
+  falseColorOn = !falseColorOn;
+  falseColorBtn.classList.toggle('active', falseColorOn);
+  if (falseColorOn) {
+    loadLUT().then(() => { if (falseColorOn) renderFalseColor(); });
+  } else {
+    falseColorOverlay.classList.remove('show');
+  }
+});
+
+
+drawHistogramEmpty();
   dropOverlay.classList.remove('hidden');
-  saveBtn.disabled = resetBtn.disabled = compareBtn.disabled = true;
+  saveBtn.disabled = resetBtn.disabled = compareBtn.disabled = falseColorBtn.disabled = true;
+  falseColorOn = false; falseColorBtn.classList.remove('active'); falseColorOverlay.classList.remove('show');
 }
 
 function syncUI() {
@@ -643,7 +764,7 @@ function applyImage(img) {
   origCtx.drawImage(img, 0, 0);
   stops = computeDefaultStops(numValues);
   processImage();
-  saveBtn.disabled = false; resetBtn.disabled = false; compareBtn.disabled = false;
+  saveBtn.disabled = false; resetBtn.disabled = false; compareBtn.disabled = false; falseColorBtn.disabled = false;
 }
 
 // ─── Processing ───────────────────────────────────────────────────────────────
@@ -903,7 +1024,6 @@ function showToast(msg) {
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
 }
 
+
 drawHistogramEmpty();
 </script>
-</body>
-</html>
