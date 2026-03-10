@@ -5,8 +5,9 @@
 <link rel="icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Value Checker</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,21 +21,21 @@
   --danger: #c04040;
   --mono: 'JetBrains Mono', monospace;
   --sans: 'JetBrains Mono', monospace;
-  --sidebar: 350px;
+  --sidebar: 280px;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--sans);
-  font-size: 17px;
+  font-size: 14px;
   height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-/* ── Header ─────────────────────────────────────────────────── */
+/* \u2500\u2500 Header \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 header {
   display: flex;
   align-items: center;
@@ -46,12 +47,13 @@ header {
 
 .logo {
   font-family: var(--mono);
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent);
   flex-shrink: 0;
+  margin-right: 16px;
 }
 
 .url-bar { display: flex; flex: 1; max-width: 520px; gap: 5px; }
@@ -62,7 +64,7 @@ header {
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 11px;
   padding: 6px 10px;
   outline: none;
   transition: border-color 0.15s;
@@ -75,7 +77,7 @@ header {
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 11px;
   padding: 6px 12px;
   cursor: pointer;
   letter-spacing: 0.07em;
@@ -92,7 +94,7 @@ header {
   border: 1px solid var(--border);
   color: var(--text-dim);
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 11px;
   padding: 6px 11px;
   cursor: pointer;
   letter-spacing: 0.07em;
@@ -106,8 +108,9 @@ header {
 .hbtn.danger:not(:disabled):hover { border-color: var(--danger); color: var(--danger); }
 .hbtn.compare { cursor: pointer; }
 .hbtn.compare.active { border-color: var(--accent); color: var(--accent); background: rgba(232,232,232,0.07); }
+.hbtn.active { background: var(--accent); color: #000; border-color: var(--accent); }
 
-/* ── Main layout ─────────────────────────────────────────────── */
+/* \u2500\u2500 Main layout \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 .main { display: flex; flex: 1; overflow: hidden; }
 
 .canvas-area {
@@ -135,7 +138,7 @@ header {
 
 .canvas-label {
   position: absolute; top: 10px; left: 12px;
-  font-family: var(--mono); font-size: 13px;
+  font-family: var(--mono); font-size: 10px;
   letter-spacing: 0.12em; color: var(--text-dim);
   text-transform: uppercase; pointer-events: none;
 }
@@ -162,10 +165,10 @@ header {
   width: 50px; height: 50px;
   border: 1px solid var(--border); border-radius: 4px;
   display: flex; align-items: center; justify-content: center;
-  color: var(--text-dim); font-size: 27px;
+  color: var(--text-dim); font-size: 22px;
 }
 .drop-text {
-  font-family: var(--mono); font-size: 14px;
+  font-family: var(--mono); font-size: 11px;
   color: var(--text-dim); letter-spacing: 0.08em;
   text-align: center; line-height: 2;
 }
@@ -192,7 +195,7 @@ body.dragging-over .drag-highlight { opacity: 1; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Sidebar ─────────────────────────────────────────────────── */
+/* \u2500\u2500 Sidebar \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 .sidebar {
   width: var(--sidebar); flex-shrink: 0;
   background: var(--panel);
@@ -204,7 +207,7 @@ body.dragging-over .drag-highlight { opacity: 1; }
 .section { padding: 16px 16px 14px; border-bottom: 1px solid var(--border); }
 
 .section-title {
-  font-family: var(--mono); font-size: 13px;
+  font-family: var(--mono); font-size: 9px;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--text-dim); margin-bottom: 14px;
 }
@@ -214,8 +217,8 @@ body.dragging-over .drag-highlight { opacity: 1; }
   justify-content: space-between; margin-bottom: 10px;
 }
 .control-row:last-child { margin-bottom: 0; }
-.control-label { font-family: var(--mono); font-size: 14px; color: var(--text); letter-spacing: 0.04em; }
-.control-value { font-family: var(--mono); font-size: 14px; color: var(--accent); min-width: 26px; text-align: right; }
+.control-label { font-family: var(--mono); font-size: 11px; color: var(--text); letter-spacing: 0.04em; }
+.control-value { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 26px; text-align: right; }
 
 input[type=range] {
   -webkit-appearance: none; width: 100%; height: 2px;
@@ -233,28 +236,28 @@ input[type=range]::-webkit-slider-thumb {
 .toggle-btn {
   flex: 1; padding: 6px 0;
   background: transparent; border: 1px solid var(--border);
-  color: var(--text-dim); font-family: var(--mono); font-size: 14px;
+  color: var(--text-dim); font-family: var(--mono); font-size: 11px;
   cursor: pointer; transition: all 0.1s; text-align: center;
 }
 .toggle-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
 
-/* ── Levels histogram with draggable stops ───────────────────── */
+/* \u2500\u2500 Levels histogram with draggable stops \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 .hist-wrap {
   position: relative;
   width: 100%;
-  height: 120px;
+  height: 80px;
   margin-top: 4px;
   cursor: crosshair;
   user-select: none;
 }
 #histCanvas { display: block; width: 100%; height: 100%; }
 
-/* ── Value distribution chart (bar chart) ────────────────────── */
+/* \u2500\u2500 Value distribution chart (bar chart) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 .dist-chart-wrap {
   display: flex;
   align-items: flex-end;
   gap: 6px;
-  height: 115px;
+  height: 90px;
   margin-top: 4px;
 }
 
@@ -285,7 +288,7 @@ input[type=range]::-webkit-slider-thumb {
 
 .dist-col-pct {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 10px;
   color: var(--accent);
   letter-spacing: 0.02em;
   flex-shrink: 0;
@@ -293,14 +296,14 @@ input[type=range]::-webkit-slider-thumb {
 
 .dist-col-swatch {
   width: 100%;
-  height: 18px;
+  height: 14px;
   border-radius: 2px;
   flex-shrink: 0;
 }
 
 .dist-col-idx {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 9px;
   color: var(--text-dim);
   flex-shrink: 0;
 }
@@ -309,7 +312,7 @@ input[type=range]::-webkit-slider-thumb {
 .btn {
   width: 100%; padding: 9px;
   background: transparent; border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 14px;
+  color: var(--text); font-family: var(--mono); font-size: 11px;
   letter-spacing: 0.08em; text-transform: uppercase;
   cursor: pointer; transition: border-color 0.15s, color 0.15s; margin-top: 5px;
 }
@@ -318,12 +321,47 @@ input[type=range]::-webkit-slider-thumb {
 
 input[type=file] { display: none; }
 
+/* False Color Legend */
+.fc-legend { display: flex; flex-direction: column; gap: 3px; margin-top: 2px; }
+.fc-row { display: flex; align-items: center; gap: 8px; }
+.fc-swatch { width: 16px; height: 16px; border-radius: 2px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.08); }
+.fc-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+.fc-range { font-family: var(--mono); font-size: 9px; color: var(--text-dim); opacity: 0.55; margin-left: auto; }
+.fc-range.active { color: var(--accent); opacity: 1; font-weight: 500; }
+.fc-label.active { color: var(--text); }
+
+.fc-verdict {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  color: var(--text);
+  border-left: 2px solid var(--border);
+  padding: 8px 10px;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+.fc-verdict .verdict-grade {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.fc-verdict .verdict-grade.good { color: #55a146; border-color: #55a146; }
+.fc-verdict .verdict-grade.warn { color: #fdfd2e; }
+.fc-verdict .verdict-grade.bad  { color: #ef5a8d; }
+.fc-verdict.good { border-color: #55a146; }
+.fc-verdict.warn { border-color: #fdfd2e; }
+.fc-verdict.bad  { border-color: #ef5a8d; }
+.fc-verdict .verdict-line { color: var(--text-dim); margin-bottom: 3px; }
+
 /* Toast */
 .toast {
   position: fixed; bottom: 18px; left: 50%;
   transform: translateX(-50%) translateY(22px);
   background: #1e1e1e; border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 14px;
+  color: var(--text); font-family: var(--mono); font-size: 11px;
   letter-spacing: 0.07em; padding: 8px 16px; border-radius: 2px;
   opacity: 0; transition: opacity 0.2s, transform 0.2s;
   pointer-events: none; z-index: 200; white-space: nowrap;
@@ -359,9 +397,7 @@ input[type=file] { display: none; }
         <div class="drop-text">Drop image anywhere<br>click to browse files<br>or paste a URL above</div>
       </div>
       <canvas id="origCanvas"></canvas>
-      <div class="compare-canvas" id="falseColorOverlay">
-        <canvas id="falseColorCanvas"></canvas>
-      </div>
+      <div class="compare-canvas" id="falseColorOverlay"><span class="canvas-label">False Color</span><canvas id="falseColorCanvas"></canvas></div>
     </div>
 
     <div class="canvas-wrap" id="valueWrap">
@@ -393,9 +429,9 @@ input[type=file] { display: none; }
       <div class="slider-wrap">
         <div class="control-row">
           <span class="control-label">Simplicity</span>
-          <span class="control-value" id="simplVal">1</span>
+          <span class="control-value" id="simplVal">0</span>
         </div>
-        <input type="range" id="simplicity" min="0" max="7" value="1" step="1">
+        <input type="range" id="simplicity" min="0" max="100" value="0">
       </div>
       <div class="slider-wrap">
         <div class="control-row">
@@ -412,7 +448,7 @@ input[type=file] { display: none; }
       <div class="hist-wrap" id="histWrap">
         <canvas id="histCanvas"></canvas>
       </div>
-      <div style="font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-top:8px;letter-spacing:0.05em;">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:6px;letter-spacing:0.05em;">
         drag stops to adjust value thresholds
       </div>
     </div>
@@ -421,6 +457,13 @@ input[type=file] { display: none; }
     <div class="section">
       <div class="section-title">Value Distribution %</div>
       <div class="dist-chart-wrap" id="distChart"></div>
+    </div>
+
+    <!-- False Color Legend -->
+    <div class="section" id="fcLegend" style="display:none">
+      <div class="section-title">False Color</div>
+      <div id="fcVerdict"></div>
+      <div class="fc-legend" style="margin-top:10px"></div>
     </div>
 
     <!-- Actions -->
@@ -436,7 +479,7 @@ input[type=file] { display: none; }
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── Elements ─────────────────────────────────────────────────────────────────
+// \u2500\u2500\u2500 Elements \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const origCanvas     = document.getElementById('origCanvas');
 const valueCanvas    = document.getElementById('valueCanvas');
 const compareCanvas  = document.getElementById('compareCanvas');
@@ -459,25 +502,25 @@ const compareOverlay = document.getElementById('compareOverlay');
 const histWrap       = document.getElementById('histWrap');
 const toastEl        = document.getElementById('toast');
 
-// ─── State ────────────────────────────────────────────────────────────────────
+// \u2500\u2500\u2500 State \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 let currentImage = null;
 let numValues    = 3;
-let simplicity   = 1;
+let simplicity   = 0;
 let lowkey       = 50;
 let cachedGray   = null; // blurred gray array for histogram
 
 // Stops: array of 0-255 threshold values separating zones (numValues-1 stops)
-// e.g. numValues=3 → 2 stops, default at 85 and 170
+// e.g. numValues=3 \u2192 2 stops, default at 85 and 170
 let stops = computeDefaultStops(3);
 
 function computeDefaultStops(n) {
-  // n zones → n-1 stop positions evenly spaced 0-255
+  // n zones \u2192 n-1 stop positions evenly spaced 0-255
   const arr = [];
   for (let i = 1; i < n; i++) arr.push(Math.round((i / n) * 255));
   return arr;
 }
 
-// ─── Undo ─────────────────────────────────────────────────────────────────────
+// \u2500\u2500\u2500 Undo \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const undoStack = [];
 const MAX_UNDO  = 20;
 
@@ -503,7 +546,7 @@ function undo() {
   showToast('Undone');
 }
 
-// ─── Reset ────────────────────────────────────────────────────────────────────
+// \u2500\u2500\u2500 Reset \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function doReset() {
   if (currentImage) pushUndo();
   currentImage = null; numValues = 3; simplicity = 0; lowkey = 50;
@@ -517,125 +560,11 @@ function clearAll() {
   valueCanvas.width = valueCanvas.height = 0;
   cachedGray = null;
   distChart.innerHTML = '';
-  
-// ─── False Colors LUT ────────────────────────────────────────────────────────
-const falseColorBtn     = document.getElementById('falseColorBtn');
-const falseColorOverlay = document.getElementById('falseColorOverlay');
-const falseColorCanvas  = document.getElementById('falseColorCanvas');
-const falseColorCtx     = falseColorCanvas.getContext('2d');
-
-let falseColorOn = false;
-let lutData      = null; // Float32Array r,g,b per entry, 64^3
-let lutSize      = 0;
-let lutLoading   = false;
-
-function parseCubeLUT(text) {
-  const lines = text.split(/\r?\n/);
-  let size = 0;
-  const entries = [];
-  for (const line of lines) {
-    const t = line.trim();
-    if (!t || t.startsWith('#') || t.startsWith('TITLE')) continue;
-    const sizeMatch = t.match(/^LUT_3D_SIZE\s+(\d+)/);
-    if (sizeMatch) { size = parseInt(sizeMatch[1]); continue; }
-    if (t.startsWith('LUT_') || t.startsWith('DOMAIN')) continue;
-    const parts = t.split(/\s+/);
-    if (parts.length === 3) {
-      const r = parseFloat(parts[0]), g = parseFloat(parts[1]), b = parseFloat(parts[2]);
-      if (!isNaN(r)) entries.push(r, g, b);
-    }
-  }
-  lutSize = size;
-  lutData = new Float32Array(entries);
-  console.log(`LUT loaded: ${size}^3, ${entries.length/3} entries`);
-}
-
-function loadLUT() {
-  if (lutData || lutLoading) return Promise.resolve();
-  lutLoading = true;
-  return fetch('FalseColor.cube')
-    .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.text(); })
-    .then(text => { parseCubeLUT(text); lutLoading = false; })
-    .catch(err => { lutLoading = false; showToast('Could not load FalseColor.cube'); console.error(err); });
-}
-
-function applyLUT(imageData) {
-  const src  = imageData.data;
-  const out  = new Uint8ClampedArray(src.length);
-  const size = lutSize;
-  const size2 = size * size;
-
-  for (let i = 0; i < src.length; i += 4) {
-    // Normalize 0-1
-    const r = src[i]   / 255;
-    const g = src[i+1] / 255;
-    const b = src[i+2] / 255;
-
-    // .cube format: R is fastest axis, then G, then B
-    const rf = r * (size - 1);
-    const gf = g * (size - 1);
-    const bf = b * (size - 1);
-
-    const r0 = Math.min(Math.floor(rf), size - 2);
-    const g0 = Math.min(Math.floor(gf), size - 2);
-    const b0 = Math.min(Math.floor(bf), size - 2);
-    const rt = rf - r0, gt = gf - g0, bt = bf - b0;
-
-    // Index: R + G*size + B*size*size (R fastest)
-    function idx(rr, gg, bb) { return (rr + gg * size + bb * size2) * 3; }
-
-    function lerp(a, b, t) { return a + (b - a) * t; }
-
-    for (let ch = 0; ch < 3; ch++) {
-      const c000 = lutData[idx(r0,   g0,   b0)   + ch];
-      const c100 = lutData[idx(r0+1, g0,   b0)   + ch];
-      const c010 = lutData[idx(r0,   g0+1, b0)   + ch];
-      const c110 = lutData[idx(r0+1, g0+1, b0)   + ch];
-      const c001 = lutData[idx(r0,   g0,   b0+1) + ch];
-      const c101 = lutData[idx(r0+1, g0,   b0+1) + ch];
-      const c011 = lutData[idx(r0,   g0+1, b0+1) + ch];
-      const c111 = lutData[idx(r0+1, g0+1, b0+1) + ch];
-
-      const v =
-        lerp(lerp(lerp(c000, c100, rt), lerp(c010, c110, rt), gt),
-             lerp(lerp(c001, c101, rt), lerp(c011, c111, rt), gt), bt);
-      out[i + ch] = Math.round(v * 255);
-    }
-    out[i + 3] = 255;
-  }
-  return new ImageData(out, imageData.width, imageData.height);
-}
-
-function renderFalseColor() {
-  if (!currentImage) return;
-  const w = currentImage.width, h = currentImage.height;
-  const off = document.createElement('canvas');
-  off.width = w; off.height = h;
-  const offCtx = off.getContext('2d');
-  offCtx.drawImage(currentImage, 0, 0);
-  const imgData = offCtx.getImageData(0, 0, w, h);
-  falseColorCanvas.width  = w;
-  falseColorCanvas.height = h;
-  falseColorCtx.putImageData(applyLUT(imgData), 0, 0);
-  falseColorOverlay.classList.add('show');
-}
-
-falseColorBtn.addEventListener('click', () => {
-  if (!currentImage) return;
-  falseColorOn = !falseColorOn;
-  falseColorBtn.classList.toggle('active', falseColorOn);
-  if (falseColorOn) {
-    loadLUT().then(() => { if (falseColorOn) renderFalseColor(); });
-  } else {
-    falseColorOverlay.classList.remove('show');
-  }
-});
-
-
-drawHistogramEmpty();
+  drawHistogramEmpty();
   dropOverlay.classList.remove('hidden');
   saveBtn.disabled = resetBtn.disabled = compareBtn.disabled = falseColorBtn.disabled = true;
   falseColorOn = false; falseColorBtn.classList.remove('active'); falseColorOverlay.classList.remove('show');
+  document.getElementById('fcLegend').style.display = 'none';
 }
 
 function syncUI() {
@@ -653,7 +582,7 @@ document.addEventListener('keydown', e => {
 });
 undoBtn.addEventListener('click', undo);
 
-// ─── Compare button (hold to show original over value map) ────────────────────
+// \u2500\u2500\u2500 Compare button (hold to show original over value map) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 compareBtn.addEventListener('mousedown', () => {
   if (!currentImage) return;
   compareCanvas.width  = currentImage.width;
@@ -674,7 +603,7 @@ compareBtn.addEventListener('mouseleave', endCompare);
 compareBtn.addEventListener('touchstart', e => { e.preventDefault(); compareBtn.dispatchEvent(new MouseEvent('mousedown')); });
 compareBtn.addEventListener('touchend', endCompare);
 
-// ─── Controls ─────────────────────────────────────────────────────────────────
+// \u2500\u2500\u2500 Controls \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 document.getElementById('simplicity').addEventListener('input', e => {
   pushUndo();
   simplicity = +e.target.value;
@@ -702,7 +631,7 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
   });
 });
 
-// ─── File / URL loading ───────────────────────────────────────────────────────
+// \u2500\u2500\u2500 File / URL loading \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 dropOverlay.addEventListener('click', () => fileInput.click());
 document.getElementById('loadBtn').addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', e => {
@@ -743,7 +672,7 @@ function loadFromURL(url) {
   img.onerror = () => {
     const img2 = new Image();
     img2.onload = () => { setLoading(false); applyImage(img2); showToast('Loaded from URL'); };
-    img2.onerror = () => { setLoading(false); showToast('Could not load URL — try downloading first'); };
+    img2.onerror = () => { setLoading(false); showToast('Could not load URL \u2014 try downloading first'); };
     img2.src = url;
   };
   img.src = url;
@@ -767,7 +696,7 @@ function applyImage(img) {
   saveBtn.disabled = false; resetBtn.disabled = false; compareBtn.disabled = false; falseColorBtn.disabled = false;
 }
 
-// ─── Processing ───────────────────────────────────────────────────────────────
+// \u2500\u2500\u2500 Processing \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function gaussianBlur(imageData, radius) {
   if (radius === 0) return imageData;
   const w = imageData.width, h = imageData.height;
@@ -801,9 +730,7 @@ function processImage() {
   for (let i=0;i<gray.length;i++){gd.data[i*4]=gray[i];gd.data[i*4+1]=gray[i];gd.data[i*4+2]=gray[i];gd.data[i*4+3]=255;}
 
   // Blur
-  // 0-7 mapped: 0→0, 1→1, 2→2, 3→3, 4→4, 5→6, 6→8, 7→10
-  const blurTable = [0, 1, 2, 3, 4, 6, 8, 10];
-  const br = blurTable[Math.min(simplicity, 7)];
+  const br = Math.round((simplicity/100)*80);
   const blurred = br>0 ? gaussianBlur(gd,br) : gd;
   const bg = new Uint8ClampedArray(w*h);
   for (let i=0;i<bg.length;i++) bg[i]=blurred.data[i*4];
@@ -856,12 +783,12 @@ function renderValueMap() {
   drawDistribution(counts, w*h, zoneMids);
 }
 
-// ─── Histogram with draggable stops ───────────────────────────────────────────
+// \u2500\u2500\u2500 Histogram with draggable stops \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 let histBins = null;
 
 function drawHistogramEmpty() {
   const cw = histWrap.clientWidth || 240;
-  const ch = 100;
+  const ch = 80;
   histCanvas.width = cw; histCanvas.height = ch;
   histCtx.fillStyle = '#0a0a0a';
   histCtx.fillRect(0,0,cw,ch);
@@ -875,9 +802,7 @@ function drawHistogram(grayArr) {
 
 function redrawHistCanvas() {
   const cw = histWrap.clientWidth || 240;
-  const LABEL_H = 44; // space at bottom for triangles + staggered labels
-  const TOP_H   = 6;
-  const ch = 120;
+  const ch = 80;
   histCanvas.width = cw; histCanvas.height = ch;
 
   if (!histBins) { histCtx.fillStyle='#0a0a0a'; histCtx.fillRect(0,0,cw,ch); return; }
@@ -886,59 +811,52 @@ function redrawHistCanvas() {
   histCtx.fillStyle = '#0a0a0a';
   histCtx.fillRect(0,0,cw,ch);
 
-  const barAreaTop = TOP_H;
-  const barAreaH   = ch - LABEL_H - TOP_H;
-
   // Draw histogram bars
   const bw = cw/256;
   for (let i=0;i<256;i++) {
-    const barH = (histBins[i]/max)*barAreaH;
+    const barH = (histBins[i]/max)*(ch-16);
     histCtx.fillStyle = 'rgba(160,160,160,0.55)';
-    histCtx.fillRect(i*bw, barAreaTop+barAreaH-barH, bw+0.5, barH);
+    histCtx.fillRect(i*bw, ch-14-barH, bw+0.5, barH);
   }
 
-  // Zone shading
+  // Zone shading between stops
   const sortedStops = [...stops].sort((a,b)=>a-b);
   const zoneColors = ['rgba(0,0,0,0.18)','rgba(120,120,120,0.12)','rgba(220,220,220,0.12)','rgba(255,255,255,0.1)','rgba(200,200,200,0.08)'];
   let prev = 0;
   for (let i=0;i<=sortedStops.length;i++) {
     const next = i < sortedStops.length ? sortedStops[i] : 255;
-    const x1 = (prev/255)*cw, x2 = (next/255)*cw;
+    const x1 = (prev/255)*cw;
+    const x2 = (next/255)*cw;
     histCtx.fillStyle = zoneColors[i % zoneColors.length];
-    histCtx.fillRect(x1, barAreaTop, x2-x1, barAreaH);
+    histCtx.fillRect(x1, 0, x2-x1, ch-14);
     prev = next;
   }
 
-  // Stop markers — labels above bars, triangles below
+  // Stop markers
   const sortedIdx = stops.map((_,i)=>i).sort((a,b)=>stops[a]-stops[b]);
-  sortedIdx.forEach((idx, rank) => {
+  sortedIdx.forEach(idx => {
     const x = (stops[idx]/255)*cw;
-
-    // Vertical line through bar area
+    // Line
     histCtx.strokeStyle = '#e8e8e8';
     histCtx.lineWidth = 1;
-    histCtx.beginPath(); histCtx.moveTo(x, barAreaTop); histCtx.lineTo(x, barAreaTop+barAreaH); histCtx.stroke();
-
-    // Triangle handle at bottom
+    histCtx.beginPath(); histCtx.moveTo(x, 0); histCtx.lineTo(x, ch-14); histCtx.stroke();
+    // Handle triangle
     histCtx.fillStyle = '#e8e8e8';
     histCtx.beginPath();
-    histCtx.moveTo(x-5, barAreaTop+barAreaH);
-    histCtx.lineTo(x+5, barAreaTop+barAreaH);
-    histCtx.lineTo(x,   barAreaTop+barAreaH+10);
+    histCtx.moveTo(x-5, ch-14);
+    histCtx.lineTo(x+5, ch-14);
+    histCtx.lineTo(x, ch-2);
     histCtx.closePath();
     histCtx.fill();
-
-    // Value label below triangle, staggered so adjacent stops don't collide
-    const labelY = rank % 2 === 0 ? barAreaTop + barAreaH + 24 : barAreaTop + barAreaH + 37;
-    histCtx.fillStyle = '#aaa';
-    histCtx.font = '12px JetBrains Mono, monospace';
+    // Value label
+    histCtx.fillStyle = '#888';
+    histCtx.font = '9px JetBrains Mono, monospace';
     histCtx.textAlign = 'center';
-    const lx = Math.max(18, Math.min(cw - 18, x));
-    histCtx.fillText(stops[idx], lx, labelY);
+    histCtx.fillText(stops[idx], x, ch-1);
   });
 }
 
-// ─── Dragging stops on histogram ──────────────────────────────────────────────
+// \u2500\u2500\u2500 Dragging stops on histogram \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 let draggingStop = null;
 
 histWrap.addEventListener('mousedown', e => {
@@ -967,7 +885,7 @@ window.addEventListener('mousemove', e => {
   const mx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
   let val = Math.round(mx * 255);
 
-  // Clamp so stops don't cross each other — keep min gap of 5
+  // Clamp so stops don't cross each other \u2014 keep min gap of 5
   const sorted = [...stops].map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
   const myRank = sorted.findIndex(x=>x.i===draggingStop);
   if (myRank > 0) val = Math.max(val, sorted[myRank-1].v + 5);
@@ -981,7 +899,7 @@ window.addEventListener('mousemove', e => {
 
 window.addEventListener('mouseup', () => { draggingStop = null; });
 
-// ─── Distribution chart ───────────────────────────────────────────────────────
+// \u2500\u2500\u2500 Distribution chart \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function drawDistribution(counts, total, zoneMids) {
   distChart.innerHTML = '';
   const maxCount = Math.max(...counts);
@@ -1004,7 +922,7 @@ function drawDistribution(counts, total, zoneMids) {
   });
 }
 
-// ─── Export ───────────────────────────────────────────────────────────────────
+// \u2500\u2500\u2500 Export \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 saveBtn.addEventListener('click', () => {
   const a = document.createElement('a');
   a.download = 'value-map.png';
@@ -1013,7 +931,7 @@ saveBtn.addEventListener('click', () => {
   showToast('Exported value-map.png');
 });
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// \u2500\u2500\u2500 Helpers \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function setLoading(on) { loadingOverlay.classList.toggle('show', on); }
 
 let toastTimer;
@@ -1025,5 +943,193 @@ function showToast(msg) {
 }
 
 
+// ─── False Colors ─────────────────────────────────────────────────────────────
+const falseColorBtn     = document.getElementById('falseColorBtn');
+const falseColorOverlay = document.getElementById('falseColorOverlay');
+const falseColorCanvas  = document.getElementById('falseColorCanvas');
+const falseColorCtx     = falseColorCanvas.getContext('2d');
+let falseColorOn = false;
+
+// Color ramp derived from CG-FalseColor.cube neutral axis
+// [luminance 0-1, [R, G, B] 0-255]
+const FC_STOPS = [
+  [0.000, [226, 32,151]], // pink/magenta   — deep underexposed
+  [0.095, [ 85, 72,190]], // blue/purple
+  [0.190, [ 49,112,223]], // blue
+  [0.254, [ 80,115,191]], // blue-grey
+  [0.286, [ 77, 79, 71]], // dark grey      — transition
+  [0.317, [ 77, 89, 48]], // dark olive
+  [0.381, [ 79,140, 35]], // green
+  [0.444, [ 85,161, 70]], // bright green
+  [0.476, [104,136,105]], // grey-green     — lower midtone
+  [0.508, [140,131,130]], // grey           — 18% middle grey
+  [0.540, [219,169,133]], // skin/peach
+  [0.571, [181,186,177]], // light grey
+  [0.635, [222,220,114]], // yellow-green
+  [0.698, [253,253, 46]], // yellow
+  [0.762, [232,246, 44]], // yellow-green
+  [0.857, [229,196,  5]], // orange-yellow
+  [0.889, [231,162,  5]], // orange
+  [0.905, [231, 79, 32]], // red-orange     — overexposed
+  [0.952, [239, 90,141]], // pink           — clipping
+  [1.000, [255,255,255]], // white          — clipped
+];
+
+// Precompute 256-entry lookup table (one entry per luminance byte)
+const FC_LUT = new Uint8Array(256 * 3);
+(function() {
+  for (let i = 0; i < 256; i++) {
+    const t = i / 255;
+    let lo = FC_STOPS[0], hi = FC_STOPS[FC_STOPS.length - 1];
+    for (let s = 0; s < FC_STOPS.length - 1; s++) {
+      if (t >= FC_STOPS[s][0] && t <= FC_STOPS[s+1][0]) { lo = FC_STOPS[s]; hi = FC_STOPS[s+1]; break; }
+    }
+    const span = hi[0] - lo[0];
+    const f = span < 1e-5 ? 0 : (t - lo[0]) / span;
+    const sf = f * f * (3 - 2 * f); // smoothstep
+    FC_LUT[i*3]   = Math.round(lo[1][0] + (hi[1][0] - lo[1][0]) * sf);
+    FC_LUT[i*3+1] = Math.round(lo[1][1] + (hi[1][1] - lo[1][1]) * sf);
+    FC_LUT[i*3+2] = Math.round(lo[1][2] + (hi[1][2] - lo[1][2]) * sf);
+  }
+})();
+
+function renderFalseColor() {
+  if (!currentImage) return;
+  const w = currentImage.width, h = currentImage.height;
+  const off = document.createElement('canvas');
+  off.width = w; off.height = h;
+  off.getContext('2d').drawImage(currentImage, 0, 0);
+  const src = off.getContext('2d').getImageData(0, 0, w, h).data;
+  const out = new Uint8ClampedArray(w * h * 4);
+  for (let i = 0; i < src.length; i += 4) {
+    const lum = Math.round(0.299*src[i] + 0.587*src[i+1] + 0.114*src[i+2]);
+    out[i]   = FC_LUT[lum*3];
+    out[i+1] = FC_LUT[lum*3+1];
+    out[i+2] = FC_LUT[lum*3+2];
+    out[i+3] = 255;
+  }
+  falseColorCanvas.width = w; falseColorCanvas.height = h;
+  falseColorCtx.putImageData(new ImageData(out, w, h), 0, 0);
+  falseColorOverlay.classList.add('show');
+}
+
+falseColorBtn.addEventListener('click', () => {
+  if (!currentImage) return;
+  falseColorOn = !falseColorOn;
+  falseColorBtn.classList.toggle('active', falseColorOn);
+  if (falseColorOn) {
+    renderFalseColor();
+    showFCLegend();
+  } else {
+    falseColorOverlay.classList.remove('show');
+    document.getElementById('fcLegend').style.display = 'none';
+  }
+});
+
+function showFCLegend() {
+  const legend = document.getElementById('fcLegend');
+  legend.style.display = '';
+  // Analyse pixel distribution across zones
+  const off = document.createElement('canvas');
+  off.width = currentImage.width; off.height = currentImage.height;
+  off.getContext('2d').drawImage(currentImage, 0, 0);
+  const data = off.getContext('2d').getImageData(0, 0, off.width, off.height).data;
+  const total = off.width * off.height;
+
+  // Bucket each pixel by luminance into named zones
+  const zones = {
+    clipped:     { min:0.97, max:1.00, count:0, label:'Clipped',       color:'#ffffff' },
+    overexposed: { min:0.90, max:0.97, count:0, label:'Overexposed',    color:'#ef5a8d' },
+    hot:         { min:0.86, max:0.90, count:0, label:'Hot',            color:'#e74f20' },
+    bright:      { min:0.70, max:0.86, count:0, label:'Bright',         color:'#e7a205' },
+    exposed:     { min:0.60, max:0.70, count:0, label:'Exposed',        color:'#fdfd2e' },
+    skin:        { min:0.52, max:0.60, count:0, label:'Skin / Peach',   color:'#dba985' },
+    midgrey:     { min:0.46, max:0.52, count:0, label:'Middle Grey',    color:'#8c8382' },
+    lowmid:      { min:0.38, max:0.46, count:0, label:'Low Midtone',    color:'#688869' },
+    correct:     { min:0.25, max:0.38, count:0, label:'Shadow',         color:'#55a146' },
+    under:       { min:0.10, max:0.25, count:0, label:'Underexposed',   color:'#3170df' },
+    crushed:     { min:0.00, max:0.10, count:0, label:'Crushed',        color:'#e22097' },
+  };
+  const keys = Object.keys(zones);
+
+  for (let i = 0; i < data.length; i += 4) {
+    const lum = (0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2]) / 255;
+    for (const k of keys) {
+      if (lum >= zones[k].min && lum < zones[k].max + 0.001) { zones[k].count++; break; }
+    }
+  }
+
+  // Compute percentages
+  keys.forEach(k => { zones[k].pct = (zones[k].count / total) * 100; });
+
+  // ── Verdict logic ──────────────────────────────────────────────────────────
+  const clipped    = zones.clipped.pct;
+  const over       = zones.overexposed.pct + zones.hot.pct + clipped;
+  const bright     = zones.bright.pct + zones.exposed.pct;
+  const mid        = zones.skin.pct + zones.midgrey.pct + zones.lowmid.pct;
+  const shadow     = zones.correct.pct;
+  const under      = zones.under.pct + zones.crushed.pct;
+  const crushed    = zones.crushed.pct;
+
+  const lines = [];
+  let grade = 'good';
+
+  // Overall exposure call
+  if (clipped > 5) {
+    grade = 'bad';
+    lines.push(`${clipped.toFixed(1)}% of pixels are clipped white — detail is lost in highlights.`);
+  } else if (over > 20) {
+    grade = 'warn';
+    lines.push(`Heavy highlight bias — ${over.toFixed(1)}% of the image is in overexposed territory.`);
+  } else if (under > 40) {
+    grade = 'warn';
+    lines.push(`Heavy shadow bias — ${under.toFixed(1)}% of the image is underexposed.`);
+  } else if (crushed > 15) {
+    grade = 'bad';
+    lines.push(`${crushed.toFixed(1)}% crushed blacks — shadow detail is gone.`);
+  } else if (mid > 40) {
+    grade = 'good';
+    lines.push(`Well-exposed midtones — ${mid.toFixed(1)}% of the image sits in the middle range.`);
+  } else {
+    lines.push(`Exposure looks balanced across the tonal range.`);
+  }
+
+  // Contrast read
+  const hasHighs = over + bright > 25;
+  const hasLows  = under + shadow > 25;
+  if (hasHighs && hasLows)  lines.push(`High contrast — both highlights and shadows are heavily used.`);
+  else if (!hasHighs && !hasLows) lines.push(`Low contrast — image is mostly midtones with limited range.`);
+  else if (hasHighs && mid < 20)  lines.push(`Looks high-key — bright with minimal midtone mass.`);
+  else if (hasLows && mid < 20)   lines.push(`Looks low-key — dark with minimal midtone mass.`);
+
+  // Clipping detail
+  if (clipped > 0.5 && clipped <= 5) lines.push(`Minor clipping (${clipped.toFixed(1)}%) — check specular highlights.`);
+
+  // Grade label
+  const gradeText = grade === 'good' ? '✓ Looks good' : grade === 'warn' ? '⚠ Needs attention' : '✗ Exposure issues';
+
+  // ── Render verdict ─────────────────────────────────────────────────────────
+  const verdictEl = document.getElementById('fcVerdict');
+  verdictEl.innerHTML = `<div class="fc-verdict ${grade}">
+    <div class="verdict-grade ${grade}">${gradeText}</div>
+    ${lines.map(l => `<div class="verdict-line">${l}</div>`).join('')}
+  </div>`;
+
+  // ── Render legend with active highlights ───────────────────────────────────
+  const wrap = legend.querySelector('.fc-legend');
+  wrap.innerHTML = '';
+  keys.forEach(k => {
+    const z = zones[k];
+    const isActive = z.pct > 1;
+    wrap.innerHTML += `<div class="fc-row">
+      <div class="fc-swatch" style="background:${z.color}"></div>
+      <span class="fc-label${isActive ? ' active' : ''}">${z.label}</span>
+      <span class="fc-range${isActive ? ' active' : ''}">${z.pct.toFixed(1)}%</span>
+    </div>`;
+  });
+}
+
 drawHistogramEmpty();
 </script>
+</body>
+</html>
