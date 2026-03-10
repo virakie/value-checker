@@ -1,2 +1,2 @@
-# value-checker
+# Value Checker
 Lightweight value analysis tool for artists.
