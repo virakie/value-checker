@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Value Checker</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0e0e0e;
+  --panel: #161616;
+  --border: #272727;
+  --text: #d0d0d0;
+  --text-dim: #505050;
+  --accent: #e8e8e8;
+  --danger: #c04040;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --sidebar: 280px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.url-bar { display: flex; flex: 1; max-width: 520px; gap: 5px; }
+
+.url-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.url-input::placeholder { color: var(--text-dim); }
+.url-input:focus { border-color: #3a3a3a; }
+
+.url-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 12px;
+  cursor: pointer;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.url-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.header-actions { display: flex; gap: 7px; margin-left: auto; flex-shrink: 0; }
+
+.hbtn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 11px;
+  cursor: pointer;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  white-space: nowrap;
+  user-select: none;
+}
+.hbtn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.hbtn:disabled { opacity: 0.22; cursor: not-allowed; }
+.hbtn.danger:not(:disabled):hover { border-color: var(--danger); color: var(--danger); }
+.hbtn.compare { cursor: pointer; }
+.hbtn.compare.active { border-color: var(--accent); color: var(--accent); background: rgba(232,232,232,0.07); }
+
+/* ── Main layout ─────────────────────────────────────────────── */
+.main { display: flex; flex: 1; overflow: hidden; }
+
+.canvas-area {
+  flex: 1;
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  overflow: hidden;
+  position: relative;
+}
+
+.canvas-wrap {
+  flex: 1;
+  background: #090909;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.canvas-wrap canvas {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain; display: block;
+}
+
+.canvas-label {
+  position: absolute; top: 10px; left: 12px;
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.12em; color: var(--text-dim);
+  text-transform: uppercase; pointer-events: none;
+}
+
+/* compare overlay */
+.compare-canvas {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.1s;
+  background: #090909;
+}
+.compare-canvas.show { opacity: 1; }
+.compare-canvas canvas { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+
+.drop-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; cursor: pointer;
+}
+.drop-overlay.hidden { display: none; }
+.drop-icon {
+  width: 50px; height: 50px;
+  border: 1px solid var(--border); border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); font-size: 22px;
+}
+.drop-text {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text-dim); letter-spacing: 0.08em;
+  text-align: center; line-height: 2;
+}
+
+.drag-highlight {
+  position: absolute; inset: 0;
+  border: 2px dashed #3a3a3a;
+  pointer-events: none; opacity: 0;
+  transition: opacity 0.15s; z-index: 10;
+}
+body.dragging-over .drag-highlight { opacity: 1; }
+
+.loading {
+  position: absolute; inset: 0;
+  background: rgba(9,9,9,0.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 20; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.loading.show { opacity: 1; pointer-events: all; }
+.spinner {
+  width: 22px; height: 22px;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar); flex-shrink: 0;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+
+.section { padding: 16px 16px 14px; border-bottom: 1px solid var(--border); }
+
+.section-title {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 14px;
+}
+
+.control-row {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 10px;
+}
+.control-row:last-child { margin-bottom: 0; }
+.control-label { font-family: var(--mono); font-size: 11px; color: var(--text); letter-spacing: 0.04em; }
+.control-value { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 26px; text-align: right; }
+
+input[type=range] {
+  -webkit-appearance: none; width: 100%; height: 2px;
+  background: var(--border); outline: none; margin-top: 6px; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 12px; height: 12px;
+  background: var(--accent); border-radius: 50%; cursor: pointer;
+}
+
+.slider-wrap { margin-bottom: 14px; }
+.slider-wrap:last-child { margin-bottom: 0; }
+
+.toggle-group { display: flex; gap: 4px; margin-top: 7px; }
+.toggle-btn {
+  flex: 1; padding: 6px 0;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-dim); font-family: var(--mono); font-size: 11px;
+  cursor: pointer; transition: all 0.1s; text-align: center;
+}
+.toggle-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+/* ── Levels histogram with draggable stops ───────────────────── */
+.hist-wrap {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  margin-top: 4px;
+  cursor: crosshair;
+  user-select: none;
+}
+#histCanvas { display: block; width: 100%; height: 100%; }
+
+/* ── Value distribution chart (bar chart) ────────────────────── */
+.dist-chart-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 90px;
+  margin-top: 4px;
+}
+
+.dist-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.dist-col-bar-wrap {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex: 1;
+}
+
+.dist-col-bar {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  transition: height 0.2s ease;
+  min-height: 2px;
+}
+
+.dist-col-pct {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.dist-col-swatch {
+  width: 100%;
+  height: 14px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.dist-col-idx {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+/* Sidebar buttons */
+.btn {
+  width: 100%; padding: 9px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text); font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: border-color 0.15s, color 0.15s; margin-top: 5px;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: 0.28; cursor: not-allowed; }
+
+input[type=file] { display: none; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 18px; left: 50%;
+  transform: translateX(-50%) translateY(22px);
+  background: #1e1e1e; border: 1px solid var(--border);
+  color: var(--text); font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.07em; padding: 8px 16px; border-radius: 2px;
+  opacity: 0; transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none; z-index: 200; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">Value Checker</span>
+  <div class="url-bar">
+    <input type="text" class="url-input" id="urlInput" placeholder="Paste image URL and press Enter…">
+    <button class="url-btn" id="urlLoadBtn">Load</button>
+  </div>
+  <div class="header-actions">
+    <button class="hbtn compare" id="compareBtn" disabled title="Hold to compare with original">⊙ Compare</button>
+    <button class="hbtn" id="undoBtn" disabled title="Ctrl+Z">↩ Undo</button>
+    <button class="hbtn danger" id="resetBtn" disabled>Reset</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="canvas-area" id="canvasArea">
+    <div class="drag-highlight"></div>
+    <div class="loading" id="loadingOverlay"><div class="spinner"></div></div>
+
+    <div class="canvas-wrap" id="origWrap">
+      <span class="canvas-label">Original</span>
+      <div class="drop-overlay" id="dropOverlay">
+        <div class="drop-icon">+</div>
+        <div class="drop-text">Drop image anywhere<br>click to browse files<br>or paste a URL above</div>
+      </div>
+      <canvas id="origCanvas"></canvas>
+    </div>
+
+    <div class="canvas-wrap" id="valueWrap">
+      <span class="canvas-label">Value Map</span>
+      <canvas id="valueCanvas"></canvas>
+      <!-- compare overlay shows original on top of value map -->
+      <div class="compare-canvas" id="compareOverlay">
+        <canvas id="compareCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+
+    <!-- Number of values -->
+    <div class="section">
+      <div class="section-title">Values Settings</div>
+      <div class="control-label" style="margin-bottom:7px">Number of values</div>
+      <div class="toggle-group" id="numValuesGroup">
+        <button class="toggle-btn" data-v="2">2</button>
+        <button class="toggle-btn active" data-v="3">3</button>
+        <button class="toggle-btn" data-v="4">4</button>
+        <button class="toggle-btn" data-v="5">5</button>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="section">
+      <div class="slider-wrap">
+        <div class="control-row">
+          <span class="control-label">Simplicity</span>
+          <span class="control-value" id="simplVal">0</span>
+        </div>
+        <input type="range" id="simplicity" min="0" max="100" value="0">
+      </div>
+      <div class="slider-wrap">
+        <div class="control-row">
+          <span class="control-label">Low Key</span>
+          <span class="control-value" id="lowkeyVal">50</span>
+        </div>
+        <input type="range" id="lowkey" min="0" max="100" value="50">
+      </div>
+    </div>
+
+    <!-- Levels histogram with adjustable stops -->
+    <div class="section">
+      <div class="section-title">Levels</div>
+      <div class="hist-wrap" id="histWrap">
+        <canvas id="histCanvas"></canvas>
+      </div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:6px;letter-spacing:0.05em;">
+        drag stops to adjust value thresholds
+      </div>
+    </div>
+
+    <!-- Distribution chart -->
+    <div class="section">
+      <div class="section-title">Value Distribution %</div>
+      <div class="dist-chart-wrap" id="distChart"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="section">
+      <button class="btn" id="saveBtn" disabled>Export Value Map</button>
+      <input type="file" id="fileInput" accept="image/*">
+      <button class="btn" id="loadBtn" style="margin-top:6px">Load Image</button>
+    </div>
+
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Elements ─────────────────────────────────────────────────────────────────
+const origCanvas     = document.getElementById('origCanvas');
+const valueCanvas    = document.getElementById('valueCanvas');
+const compareCanvas  = document.getElementById('compareCanvas');
+const histCanvas     = document.getElementById('histCanvas');
+const origCtx        = origCanvas.getContext('2d');
+const valueCtx       = valueCanvas.getContext('2d');
+const compareCtx     = compareCanvas.getContext('2d');
+const histCtx        = histCanvas.getContext('2d');
+const dropOverlay    = document.getElementById('dropOverlay');
+const distChart      = document.getElementById('distChart');
+const saveBtn        = document.getElementById('saveBtn');
+const fileInput      = document.getElementById('fileInput');
+const undoBtn        = document.getElementById('undoBtn');
+const resetBtn       = document.getElementById('resetBtn');
+const urlInput       = document.getElementById('urlInput');
+const urlLoadBtn     = document.getElementById('urlLoadBtn');
+const loadingOverlay = document.getElementById('loadingOverlay');
+const compareBtn     = document.getElementById('compareBtn');
+const compareOverlay = document.getElementById('compareOverlay');
+const histWrap       = document.getElementById('histWrap');
+const toastEl        = document.getElementById('toast');
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let currentImage = null;
+let numValues    = 3;
+let simplicity   = 0;
+let lowkey       = 50;
+let cachedGray   = null; // blurred gray array for histogram
+
+// Stops: array of 0-255 threshold values separating zones (numValues-1 stops)
+// e.g. numValues=3 → 2 stops, default at 85 and 170
+let stops = computeDefaultStops(3);
+
+function computeDefaultStops(n) {
+  // n zones → n-1 stop positions evenly spaced 0-255
+  const arr = [];
+  for (let i = 1; i < n; i++) arr.push(Math.round((i / n) * 255));
+  return arr;
+}
+
+// ─── Undo ─────────────────────────────────────────────────────────────────────
+const undoStack = [];
+const MAX_UNDO  = 20;
+
+function pushUndo() {
+  undoStack.push({ image: currentImage, numValues, simplicity, lowkey, stops: [...stops] });
+  if (undoStack.length > MAX_UNDO) undoStack.shift();
+  undoBtn.disabled = false;
+}
+
+function undo() {
+  if (!undoStack.length) return;
+  const p = undoStack.pop();
+  currentImage = p.image; numValues = p.numValues;
+  simplicity   = p.simplicity; lowkey = p.lowkey; stops = [...p.stops];
+  syncUI();
+  if (currentImage) {
+    origCanvas.width = currentImage.width; origCanvas.height = currentImage.height;
+    origCtx.drawImage(currentImage, 0, 0);
+    dropOverlay.classList.add('hidden');
+    processImage(); saveBtn.disabled = false; resetBtn.disabled = false;
+  } else { clearAll(); }
+  undoBtn.disabled = undoStack.length === 0;
+  showToast('Undone');
+}
+
+// ─── Reset ────────────────────────────────────────────────────────────────────
+function doReset() {
+  if (currentImage) pushUndo();
+  currentImage = null; numValues = 3; simplicity = 0; lowkey = 50;
+  stops = computeDefaultStops(3);
+  syncUI(); clearAll(); urlInput.value = '';
+  showToast('Reset');
+}
+
+function clearAll() {
+  origCanvas.width = origCanvas.height = 0;
+  valueCanvas.width = valueCanvas.height = 0;
+  cachedGray = null;
+  distChart.innerHTML = '';
+  drawHistogramEmpty();
+  dropOverlay.classList.remove('hidden');
+  saveBtn.disabled = resetBtn.disabled = compareBtn.disabled = true;
+}
+
+function syncUI() {
+  document.getElementById('simplicity').value      = simplicity;
+  document.getElementById('simplVal').textContent  = simplicity;
+  document.getElementById('lowkey').value          = lowkey;
+  document.getElementById('lowkeyVal').textContent = lowkey;
+  document.querySelectorAll('.toggle-btn').forEach(b =>
+    b.classList.toggle('active', +b.dataset.v === numValues));
+}
+
+resetBtn.addEventListener('click', doReset);
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+});
+undoBtn.addEventListener('click', undo);
+
+// ─── Compare button (hold to show original over value map) ────────────────────
+compareBtn.addEventListener('mousedown', () => {
+  if (!currentImage) return;
+  compareCanvas.width  = currentImage.width;
+  compareCanvas.height = currentImage.height;
+  compareCtx.drawImage(currentImage, 0, 0);
+  compareOverlay.classList.add('show');
+  compareBtn.classList.add('active');
+});
+
+function endCompare() {
+  compareOverlay.classList.remove('show');
+  compareBtn.classList.remove('active');
+}
+
+compareBtn.addEventListener('mouseup', endCompare);
+compareBtn.addEventListener('mouseleave', endCompare);
+// Touch support
+compareBtn.addEventListener('touchstart', e => { e.preventDefault(); compareBtn.dispatchEvent(new MouseEvent('mousedown')); });
+compareBtn.addEventListener('touchend', endCompare);
+
+// ─── Controls ─────────────────────────────────────────────────────────────────
+document.getElementById('simplicity').addEventListener('input', e => {
+  pushUndo();
+  simplicity = +e.target.value;
+  document.getElementById('simplVal').textContent = simplicity;
+  if (currentImage) processImage();
+});
+
+document.getElementById('lowkey').addEventListener('input', e => {
+  pushUndo();
+  lowkey = +e.target.value;
+  document.getElementById('lowkeyVal').textContent = lowkey;
+  if (currentImage) processImage();
+});
+
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    pushUndo();
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    numValues = +btn.dataset.v;
+    // Recompute stops for new value count
+    stops = computeDefaultStops(numValues);
+    if (currentImage) processImage();
+    else drawHistogramEmpty();
+  });
+});
+
+// ─── File / URL loading ───────────────────────────────────────────────────────
+dropOverlay.addEventListener('click', () => fileInput.click());
+document.getElementById('loadBtn').addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => {
+  if (e.target.files[0]) { pushUndo(); loadFromFile(e.target.files[0]); }
+  fileInput.value = '';
+});
+
+let dragCounter = 0;
+document.addEventListener('dragenter', e => { e.preventDefault(); dragCounter++; document.body.classList.add('dragging-over'); });
+document.addEventListener('dragleave', () => { if (--dragCounter <= 0) { dragCounter = 0; document.body.classList.remove('dragging-over'); } });
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => {
+  e.preventDefault(); dragCounter = 0; document.body.classList.remove('dragging-over');
+  const file = e.dataTransfer.files[0];
+  const text = e.dataTransfer.getData('text/plain');
+  if (file && file.type.startsWith('image/')) { pushUndo(); loadFromFile(file); }
+  else if (text && text.match(/^https?:\/\//i)) { pushUndo(); loadFromURL(text.trim()); }
+  else showToast('Drop an image file or image URL');
+});
+
+document.addEventListener('paste', e => {
+  if (document.activeElement === urlInput) return;
+  const items = e.clipboardData?.items;
+  if (items) for (const item of items) if (item.type.startsWith('image/')) { pushUndo(); loadFromFile(item.getAsFile()); return; }
+});
+
+function triggerURLLoad() {
+  const url = urlInput.value.trim(); if (!url) return;
+  pushUndo(); loadFromURL(url);
+}
+urlLoadBtn.addEventListener('click', triggerURLLoad);
+urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') triggerURLLoad(); });
+
+function loadFromURL(url) {
+  setLoading(true);
+  const img = new Image(); img.crossOrigin = 'anonymous';
+  img.onload = () => { setLoading(false); applyImage(img); showToast('Loaded from URL'); };
+  img.onerror = () => {
+    const img2 = new Image();
+    img2.onload = () => { setLoading(false); applyImage(img2); showToast('Loaded from URL'); };
+    img2.onerror = () => { setLoading(false); showToast('Could not load URL — try downloading first'); };
+    img2.src = url;
+  };
+  img.src = url;
+}
+
+function loadFromFile(file) {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => { applyImage(img); URL.revokeObjectURL(url); showToast('Image loaded'); };
+  img.onerror = () => { URL.revokeObjectURL(url); showToast('Could not read file'); };
+  img.src = url;
+}
+
+function applyImage(img) {
+  currentImage = img;
+  dropOverlay.classList.add('hidden');
+  origCanvas.width = img.width; origCanvas.height = img.height;
+  origCtx.drawImage(img, 0, 0);
+  stops = computeDefaultStops(numValues);
+  processImage();
+  saveBtn.disabled = false; resetBtn.disabled = false; compareBtn.disabled = false;
+}
+
+// ─── Processing ───────────────────────────────────────────────────────────────
+function gaussianBlur(imageData, radius) {
+  if (radius === 0) return imageData;
+  const w = imageData.width, h = imageData.height;
+  const src = new Uint8ClampedArray(imageData.data);
+  const dst = new Uint8ClampedArray(src.length);
+  const r   = Math.round(radius);
+
+  function bH(s,d,w,h,r){const ia=1/(r+r+1);for(let i=0;i<h;i++){let ti=i*w,li=ti,ri=ti+r,fv=s[ti*4],lv=s[(ti+w-1)*4],val=(r+1)*fv;for(let j=0;j<r;j++)val+=s[(ti+j)*4];for(let j=0;j<=r;j++){val+=s[ri++*4]-fv;d[ti++*4]=Math.round(val*ia);}for(let j=r+1;j<w-r;j++){val+=s[ri++*4]-s[li++*4];d[ti++*4]=Math.round(val*ia);}for(let j=w-r;j<w;j++){val+=lv-s[li++*4];d[ti++*4]=Math.round(val*ia);}}}
+  function bV(s,d,w,h,r){const ia=1/(r+r+1);for(let i=0;i<w;i++){let ti=i,li=ti,ri=ti+r*w,fv=s[ti*4],lv=s[(ti+w*(h-1))*4],val=(r+1)*fv;for(let j=0;j<r;j++)val+=s[(ti+j*w)*4];for(let j=0;j<=r;j++){val+=s[ri*4]-fv;d[ti*4]=Math.round(val*ia);ri+=w;ti+=w;}for(let j=r+1;j<h-r;j++){val+=s[ri*4]-s[li*4];d[ti*4]=Math.round(val*ia);li+=w;ri+=w;ti+=w;}for(let j=h-r;j<h;j++){val+=lv-s[li*4];d[ti*4]=Math.round(val*ia);li+=w;ti+=w;}}}
+
+  const tmp = new Uint8ClampedArray(src.length);
+  for (let p=0;p<3;p++){bH(p===0?src:dst,tmp,w,h,r);bV(tmp,dst,w,h,r);}
+  const out = new ImageData(w,h);
+  for (let i=0;i<dst.length;i+=4){out.data[i]=dst[i];out.data[i+1]=dst[i];out.data[i+2]=dst[i];out.data[i+3]=255;}
+  return out;
+}
+
+function processImage() {
+  const img = currentImage;
+  const w = img.width, h = img.height;
+  const off = document.createElement('canvas'); off.width=w; off.height=h;
+  const offCtx = off.getContext('2d'); offCtx.drawImage(img,0,0);
+  const imgData = offCtx.getImageData(0,0,w,h);
+
+  // Desaturate
+  const gray = new Uint8ClampedArray(w*h);
+  for (let i=0;i<imgData.data.length;i+=4)
+    gray[i/4]=Math.round(0.299*imgData.data[i]+0.587*imgData.data[i+1]+0.114*imgData.data[i+2]);
+
+  const gd = new ImageData(w,h);
+  for (let i=0;i<gray.length;i++){gd.data[i*4]=gray[i];gd.data[i*4+1]=gray[i];gd.data[i*4+2]=gray[i];gd.data[i*4+3]=255;}
+
+  // Blur
+  const br = Math.round((simplicity/100)*80);
+  const blurred = br>0 ? gaussianBlur(gd,br) : gd;
+  const bg = new Uint8ClampedArray(w*h);
+  for (let i=0;i<bg.length;i++) bg[i]=blurred.data[i*4];
+
+  // Gamma
+  const gamma = lowkey===50?1.0:lowkey<50?(0.3+(lowkey/50)*0.7):(1.0+((lowkey-50)/50)*2.0);
+  const gc = new Uint8ClampedArray(256);
+  for (let i=0;i<256;i++) gc[i]=Math.round(Math.pow(i/255,1/gamma)*255);
+
+  cachedGray = { bg, gc, w, h };
+
+  drawHistogram(bg);
+  renderValueMap();
+}
+
+// Uses stops + cachedGray to posterize and render
+function renderValueMap() {
+  if (!cachedGray) return;
+  const { bg, gc, w, h } = cachedGray;
+  const n = numValues;
+
+  // Build zone value levels from stops
+  // zones: [0 .. stop[0]], [stop[0]+1 .. stop[1]], ... [stop[n-2]+1 .. 255]
+  // representative gray value for each zone = midpoint
+  const sortedStops = [...stops].sort((a,b)=>a-b);
+  const zoneMids = [];
+  for (let i=0;i<n;i++) {
+    const lo = i===0 ? 0 : sortedStops[i-1];
+    const hi = i===n-1 ? 255 : sortedStops[i];
+    zoneMids.push(Math.round((lo+hi)/2));
+  }
+
+  const counts = new Array(n).fill(0);
+  const post   = new Uint8ClampedArray(w*h);
+
+  for (let i=0;i<bg.length;i++) {
+    const g = gc[bg[i]];
+    // Find which zone this pixel belongs to
+    let zone = 0;
+    for (let s=0;s<sortedStops.length;s++) { if (g > sortedStops[s]) zone = s+1; }
+    post[i] = zoneMids[zone];
+    counts[zone]++;
+  }
+
+  valueCanvas.width=w; valueCanvas.height=h;
+  const od = valueCtx.createImageData(w,h);
+  for (let i=0;i<post.length;i++){od.data[i*4]=post[i];od.data[i*4+1]=post[i];od.data[i*4+2]=post[i];od.data[i*4+3]=255;}
+  valueCtx.putImageData(od,0,0);
+
+  drawDistribution(counts, w*h, zoneMids);
+}
+
+// ─── Histogram with draggable stops ───────────────────────────────────────────
+let histBins = null;
+
+function drawHistogramEmpty() {
+  const cw = histWrap.clientWidth || 240;
+  const ch = 80;
+  histCanvas.width = cw; histCanvas.height = ch;
+  histCtx.fillStyle = '#0a0a0a';
+  histCtx.fillRect(0,0,cw,ch);
+}
+
+function drawHistogram(grayArr) {
+  histBins = new Array(256).fill(0);
+  for (let i=0;i<grayArr.length;i++) histBins[grayArr[i]]++;
+  redrawHistCanvas();
+}
+
+function redrawHistCanvas() {
+  const cw = histWrap.clientWidth || 240;
+  const ch = 80;
+  histCanvas.width = cw; histCanvas.height = ch;
+
+  if (!histBins) { histCtx.fillStyle='#0a0a0a'; histCtx.fillRect(0,0,cw,ch); return; }
+
+  const max = Math.max(...histBins);
+  histCtx.fillStyle = '#0a0a0a';
+  histCtx.fillRect(0,0,cw,ch);
+
+  // Draw histogram bars
+  const bw = cw/256;
+  for (let i=0;i<256;i++) {
+    const barH = (histBins[i]/max)*(ch-16);
+    histCtx.fillStyle = 'rgba(160,160,160,0.55)';
+    histCtx.fillRect(i*bw, ch-14-barH, bw+0.5, barH);
+  }
+
+  // Zone shading between stops
+  const sortedStops = [...stops].sort((a,b)=>a-b);
+  const zoneColors = ['rgba(0,0,0,0.18)','rgba(120,120,120,0.12)','rgba(220,220,220,0.12)','rgba(255,255,255,0.1)','rgba(200,200,200,0.08)'];
+  let prev = 0;
+  for (let i=0;i<=sortedStops.length;i++) {
+    const next = i < sortedStops.length ? sortedStops[i] : 255;
+    const x1 = (prev/255)*cw;
+    const x2 = (next/255)*cw;
+    histCtx.fillStyle = zoneColors[i % zoneColors.length];
+    histCtx.fillRect(x1, 0, x2-x1, ch-14);
+    prev = next;
+  }
+
+  // Stop markers
+  const sortedIdx = stops.map((_,i)=>i).sort((a,b)=>stops[a]-stops[b]);
+  sortedIdx.forEach(idx => {
+    const x = (stops[idx]/255)*cw;
+    // Line
+    histCtx.strokeStyle = '#e8e8e8';
+    histCtx.lineWidth = 1;
+    histCtx.beginPath(); histCtx.moveTo(x, 0); histCtx.lineTo(x, ch-14); histCtx.stroke();
+    // Handle triangle
+    histCtx.fillStyle = '#e8e8e8';
+    histCtx.beginPath();
+    histCtx.moveTo(x-5, ch-14);
+    histCtx.lineTo(x+5, ch-14);
+    histCtx.lineTo(x, ch-2);
+    histCtx.closePath();
+    histCtx.fill();
+    // Value label
+    histCtx.fillStyle = '#888';
+    histCtx.font = '9px IBM Plex Mono, monospace';
+    histCtx.textAlign = 'center';
+    histCtx.fillText(stops[idx], x, ch-1);
+  });
+}
+
+// ─── Dragging stops on histogram ──────────────────────────────────────────────
+let draggingStop = null;
+
+histWrap.addEventListener('mousedown', e => {
+  const rect = histCanvas.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) / rect.width;
+  const val = Math.round(mx * 255);
+
+  // Find closest stop within 10px
+  const cw = histCanvas.width;
+  let closest = -1, minDist = 12 / cw * 255;
+  stops.forEach((s,i) => {
+    const d = Math.abs(s - val);
+    if (d < minDist) { minDist = d; closest = i; }
+  });
+
+  if (closest !== -1) {
+    pushUndo();
+    draggingStop = closest;
+    e.preventDefault();
+  }
+});
+
+window.addEventListener('mousemove', e => {
+  if (draggingStop === null) return;
+  const rect = histCanvas.getBoundingClientRect();
+  const mx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  let val = Math.round(mx * 255);
+
+  // Clamp so stops don't cross each other — keep min gap of 5
+  const sorted = [...stops].map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
+  const myRank = sorted.findIndex(x=>x.i===draggingStop);
+  if (myRank > 0) val = Math.max(val, sorted[myRank-1].v + 5);
+  if (myRank < sorted.length-1) val = Math.min(val, sorted[myRank+1].v - 5);
+  val = Math.max(1, Math.min(254, val));
+
+  stops[draggingStop] = val;
+  redrawHistCanvas();
+  if (currentImage) renderValueMap();
+});
+
+window.addEventListener('mouseup', () => { draggingStop = null; });
+
+// ─── Distribution chart ───────────────────────────────────────────────────────
+function drawDistribution(counts, total, zoneMids) {
+  distChart.innerHTML = '';
+  const maxCount = Math.max(...counts);
+
+  counts.forEach((c, i) => {
+    const pct    = ((c / total) * 100).toFixed(1);
+    const color  = zoneMids[i];
+    const barPct = maxCount > 0 ? (c / maxCount) * 100 : 0;
+
+    const col = document.createElement('div');
+    col.className = 'dist-col';
+    col.innerHTML = `
+      <div class="dist-col-pct">${pct}</div>
+      <div class="dist-col-bar-wrap">
+        <div class="dist-col-bar" style="height:${barPct}%;background:rgb(${color},${color},${color});border:1px solid rgba(255,255,255,0.08);"></div>
+      </div>
+      <div class="dist-col-swatch" style="background:rgb(${color},${color},${color});"></div>
+      <div class="dist-col-idx">${i+1}</div>`;
+    distChart.appendChild(col);
+  });
+}
+
+// ─── Export ───────────────────────────────────────────────────────────────────
+saveBtn.addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.download = 'value-map.png';
+  a.href = valueCanvas.toDataURL('image/png');
+  a.click();
+  showToast('Exported value-map.png');
+});
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function setLoading(on) { loadingOverlay.classList.toggle('show', on); }
+
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
+}
+
+drawHistogramEmpty();
+</script>
+</body>
+</html>
