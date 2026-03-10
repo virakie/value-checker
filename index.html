@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Value Checker</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,8 +17,8 @@
   --text-dim: #505050;
   --accent: #e8e8e8;
   --danger: #c04040;
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'IBM Plex Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'JetBrains Mono', monospace;
   --sidebar: 350px;
 }
 
@@ -811,7 +810,7 @@ function redrawHistCanvas() {
     // Value label below triangle, staggered so adjacent stops don't collide
     const labelY = rank % 2 === 0 ? barAreaTop + barAreaH + 24 : barAreaTop + barAreaH + 37;
     histCtx.fillStyle = '#aaa';
-    histCtx.font = '12px IBM Plex Mono, monospace';
+    histCtx.font = '12px JetBrains Mono, monospace';
     histCtx.textAlign = 'center';
     const lx = Math.max(18, Math.min(cw - 18, x));
     histCtx.fillText(stops[idx], lx, labelY);
