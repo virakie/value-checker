@@ -388,9 +388,9 @@ input[type=file] { display: none; }
       <div class="slider-wrap">
         <div class="control-row">
           <span class="control-label">Simplicity</span>
-          <span class="control-value" id="simplVal">0</span>
+          <span class="control-value" id="simplVal">1</span>
         </div>
-        <input type="range" id="simplicity" min="0" max="7" value="0" step="1">
+        <input type="range" id="simplicity" min="0" max="7" value="1" step="1">
       </div>
       <div class="slider-wrap">
         <div class="control-row">
@@ -457,7 +457,7 @@ const toastEl        = document.getElementById('toast');
 // ─── State ────────────────────────────────────────────────────────────────────
 let currentImage = null;
 let numValues    = 3;
-let simplicity   = 0;
+let simplicity   = 1;
 let lowkey       = 50;
 let cachedGray   = null; // blurred gray array for histogram
 
