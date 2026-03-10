@@ -19,14 +19,14 @@
   --danger: #c04040;
   --mono: 'IBM Plex Mono', monospace;
   --sans: 'IBM Plex Sans', sans-serif;
-  --sidebar: 280px;
+  --sidebar: 350px;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: 17px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -45,7 +45,7 @@ header {
 
 .logo {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -61,7 +61,7 @@ header {
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 14px;
   padding: 6px 10px;
   outline: none;
   transition: border-color 0.15s;
@@ -74,7 +74,7 @@ header {
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 14px;
   padding: 6px 12px;
   cursor: pointer;
   letter-spacing: 0.07em;
@@ -91,7 +91,7 @@ header {
   border: 1px solid var(--border);
   color: var(--text-dim);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 14px;
   padding: 6px 11px;
   cursor: pointer;
   letter-spacing: 0.07em;
@@ -134,7 +134,7 @@ header {
 
 .canvas-label {
   position: absolute; top: 10px; left: 12px;
-  font-family: var(--mono); font-size: 10px;
+  font-family: var(--mono); font-size: 13px;
   letter-spacing: 0.12em; color: var(--text-dim);
   text-transform: uppercase; pointer-events: none;
 }
@@ -161,10 +161,10 @@ header {
   width: 50px; height: 50px;
   border: 1px solid var(--border); border-radius: 4px;
   display: flex; align-items: center; justify-content: center;
-  color: var(--text-dim); font-size: 22px;
+  color: var(--text-dim); font-size: 27px;
 }
 .drop-text {
-  font-family: var(--mono); font-size: 11px;
+  font-family: var(--mono); font-size: 14px;
   color: var(--text-dim); letter-spacing: 0.08em;
   text-align: center; line-height: 2;
 }
@@ -203,7 +203,7 @@ body.dragging-over .drag-highlight { opacity: 1; }
 .section { padding: 16px 16px 14px; border-bottom: 1px solid var(--border); }
 
 .section-title {
-  font-family: var(--mono); font-size: 9px;
+  font-family: var(--mono); font-size: 13px;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--text-dim); margin-bottom: 14px;
 }
@@ -213,8 +213,8 @@ body.dragging-over .drag-highlight { opacity: 1; }
   justify-content: space-between; margin-bottom: 10px;
 }
 .control-row:last-child { margin-bottom: 0; }
-.control-label { font-family: var(--mono); font-size: 11px; color: var(--text); letter-spacing: 0.04em; }
-.control-value { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 26px; text-align: right; }
+.control-label { font-family: var(--mono); font-size: 14px; color: var(--text); letter-spacing: 0.04em; }
+.control-value { font-family: var(--mono); font-size: 14px; color: var(--accent); min-width: 26px; text-align: right; }
 
 input[type=range] {
   -webkit-appearance: none; width: 100%; height: 2px;
@@ -232,7 +232,7 @@ input[type=range]::-webkit-slider-thumb {
 .toggle-btn {
   flex: 1; padding: 6px 0;
   background: transparent; border: 1px solid var(--border);
-  color: var(--text-dim); font-family: var(--mono); font-size: 11px;
+  color: var(--text-dim); font-family: var(--mono); font-size: 14px;
   cursor: pointer; transition: all 0.1s; text-align: center;
 }
 .toggle-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
@@ -241,7 +241,7 @@ input[type=range]::-webkit-slider-thumb {
 .hist-wrap {
   position: relative;
   width: 100%;
-  height: 80px;
+  height: 120px;
   margin-top: 4px;
   cursor: crosshair;
   user-select: none;
@@ -253,7 +253,7 @@ input[type=range]::-webkit-slider-thumb {
   display: flex;
   align-items: flex-end;
   gap: 6px;
-  height: 90px;
+  height: 115px;
   margin-top: 4px;
 }
 
@@ -284,7 +284,7 @@ input[type=range]::-webkit-slider-thumb {
 
 .dist-col-pct {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 13px;
   color: var(--accent);
   letter-spacing: 0.02em;
   flex-shrink: 0;
@@ -292,14 +292,14 @@ input[type=range]::-webkit-slider-thumb {
 
 .dist-col-swatch {
   width: 100%;
-  height: 14px;
+  height: 18px;
   border-radius: 2px;
   flex-shrink: 0;
 }
 
 .dist-col-idx {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 13px;
   color: var(--text-dim);
   flex-shrink: 0;
 }
@@ -308,7 +308,7 @@ input[type=range]::-webkit-slider-thumb {
 .btn {
   width: 100%; padding: 9px;
   background: transparent; border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 11px;
+  color: var(--text); font-family: var(--mono); font-size: 14px;
   letter-spacing: 0.08em; text-transform: uppercase;
   cursor: pointer; transition: border-color 0.15s, color 0.15s; margin-top: 5px;
 }
@@ -322,7 +322,7 @@ input[type=file] { display: none; }
   position: fixed; bottom: 18px; left: 50%;
   transform: translateX(-50%) translateY(22px);
   background: #1e1e1e; border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 11px;
+  color: var(--text); font-family: var(--mono); font-size: 14px;
   letter-spacing: 0.07em; padding: 8px 16px; border-radius: 2px;
   opacity: 0; transition: opacity 0.2s, transform 0.2s;
   pointer-events: none; z-index: 200; white-space: nowrap;
@@ -390,7 +390,7 @@ input[type=file] { display: none; }
           <span class="control-label">Simplicity</span>
           <span class="control-value" id="simplVal">0</span>
         </div>
-        <input type="range" id="simplicity" min="0" max="100" value="0">
+        <input type="range" id="simplicity" min="0" max="7" value="0" step="1">
       </div>
       <div class="slider-wrap">
         <div class="control-row">
@@ -407,7 +407,7 @@ input[type=file] { display: none; }
       <div class="hist-wrap" id="histWrap">
         <canvas id="histCanvas"></canvas>
       </div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:6px;letter-spacing:0.05em;">
+      <div style="font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-top:8px;letter-spacing:0.05em;">
         drag stops to adjust value thresholds
       </div>
     </div>
@@ -680,7 +680,9 @@ function processImage() {
   for (let i=0;i<gray.length;i++){gd.data[i*4]=gray[i];gd.data[i*4+1]=gray[i];gd.data[i*4+2]=gray[i];gd.data[i*4+3]=255;}
 
   // Blur
-  const br = Math.round((simplicity/100)*80);
+  // 0-7 mapped: 0→0, 1→1, 2→2, 3→3, 4→4, 5→6, 6→8, 7→10
+  const blurTable = [0, 1, 2, 3, 4, 6, 8, 10];
+  const br = blurTable[Math.min(simplicity, 7)];
   const blurred = br>0 ? gaussianBlur(gd,br) : gd;
   const bg = new Uint8ClampedArray(w*h);
   for (let i=0;i<bg.length;i++) bg[i]=blurred.data[i*4];
@@ -738,7 +740,7 @@ let histBins = null;
 
 function drawHistogramEmpty() {
   const cw = histWrap.clientWidth || 240;
-  const ch = 80;
+  const ch = 100;
   histCanvas.width = cw; histCanvas.height = ch;
   histCtx.fillStyle = '#0a0a0a';
   histCtx.fillRect(0,0,cw,ch);
@@ -752,7 +754,9 @@ function drawHistogram(grayArr) {
 
 function redrawHistCanvas() {
   const cw = histWrap.clientWidth || 240;
-  const ch = 80;
+  const LABEL_H = 44; // space at bottom for triangles + staggered labels
+  const TOP_H   = 6;
+  const ch = 120;
   histCanvas.width = cw; histCanvas.height = ch;
 
   if (!histBins) { histCtx.fillStyle='#0a0a0a'; histCtx.fillRect(0,0,cw,ch); return; }
@@ -761,48 +765,55 @@ function redrawHistCanvas() {
   histCtx.fillStyle = '#0a0a0a';
   histCtx.fillRect(0,0,cw,ch);
 
+  const barAreaTop = TOP_H;
+  const barAreaH   = ch - LABEL_H - TOP_H;
+
   // Draw histogram bars
   const bw = cw/256;
   for (let i=0;i<256;i++) {
-    const barH = (histBins[i]/max)*(ch-16);
+    const barH = (histBins[i]/max)*barAreaH;
     histCtx.fillStyle = 'rgba(160,160,160,0.55)';
-    histCtx.fillRect(i*bw, ch-14-barH, bw+0.5, barH);
+    histCtx.fillRect(i*bw, barAreaTop+barAreaH-barH, bw+0.5, barH);
   }
 
-  // Zone shading between stops
+  // Zone shading
   const sortedStops = [...stops].sort((a,b)=>a-b);
   const zoneColors = ['rgba(0,0,0,0.18)','rgba(120,120,120,0.12)','rgba(220,220,220,0.12)','rgba(255,255,255,0.1)','rgba(200,200,200,0.08)'];
   let prev = 0;
   for (let i=0;i<=sortedStops.length;i++) {
     const next = i < sortedStops.length ? sortedStops[i] : 255;
-    const x1 = (prev/255)*cw;
-    const x2 = (next/255)*cw;
+    const x1 = (prev/255)*cw, x2 = (next/255)*cw;
     histCtx.fillStyle = zoneColors[i % zoneColors.length];
-    histCtx.fillRect(x1, 0, x2-x1, ch-14);
+    histCtx.fillRect(x1, barAreaTop, x2-x1, barAreaH);
     prev = next;
   }
 
-  // Stop markers
+  // Stop markers — labels above bars, triangles below
   const sortedIdx = stops.map((_,i)=>i).sort((a,b)=>stops[a]-stops[b]);
-  sortedIdx.forEach(idx => {
+  sortedIdx.forEach((idx, rank) => {
     const x = (stops[idx]/255)*cw;
-    // Line
+
+    // Vertical line through bar area
     histCtx.strokeStyle = '#e8e8e8';
     histCtx.lineWidth = 1;
-    histCtx.beginPath(); histCtx.moveTo(x, 0); histCtx.lineTo(x, ch-14); histCtx.stroke();
-    // Handle triangle
+    histCtx.beginPath(); histCtx.moveTo(x, barAreaTop); histCtx.lineTo(x, barAreaTop+barAreaH); histCtx.stroke();
+
+    // Triangle handle at bottom
     histCtx.fillStyle = '#e8e8e8';
     histCtx.beginPath();
-    histCtx.moveTo(x-5, ch-14);
-    histCtx.lineTo(x+5, ch-14);
-    histCtx.lineTo(x, ch-2);
+    histCtx.moveTo(x-5, barAreaTop+barAreaH);
+    histCtx.lineTo(x+5, barAreaTop+barAreaH);
+    histCtx.lineTo(x,   barAreaTop+barAreaH+10);
     histCtx.closePath();
     histCtx.fill();
-    // Value label
-    histCtx.fillStyle = '#888';
-    histCtx.font = '9px IBM Plex Mono, monospace';
+
+    // Value label below triangle, staggered so adjacent stops don't collide
+    const labelY = rank % 2 === 0 ? barAreaTop + barAreaH + 24 : barAreaTop + barAreaH + 37;
+    histCtx.fillStyle = '#aaa';
+    histCtx.font = '12px IBM Plex Mono, monospace';
     histCtx.textAlign = 'center';
-    histCtx.fillText(stops[idx], x, ch-1);
+    const lx = Math.max(18, Math.min(cw - 18, x));
+    histCtx.fillText(stops[idx], lx, labelY);
   });
 }
 
